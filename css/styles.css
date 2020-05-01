@@ -101,20 +101,21 @@ section {
 /* Footer Styles */
 .page__footer {
     background: #000;
-    padding: 1em;
+    padding-bottom: 0.5em;
     color: #fff;
-    height: 2em;
+    height: auto;
 }
 
-.page__footer p{
+.page__footer p {
     color: #fff;
+    padding: 0;
 }
 
 /* scroll to top button */
 a.scroll-to-top {
     position: fixed;
-    right: 3em;
-    bottom: 6em;
+    right: 20px;
+    bottom: 50px;
     width: 50px;
     height: 50px;
     opacity: 0;
