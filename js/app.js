@@ -24,6 +24,9 @@ const navBar = document.getElementById('navbar__list');
 // variable for each section of page
 const pageSections = document.querySelectorAll('section');
 
+// variable for scroll to top button
+const scrollToTopBtn = document.querySelector('a.scroll-to-top');
+
 /**
  * End Global Variables
  * Start Helper Functions
@@ -34,7 +37,7 @@ const pageSections = document.querySelectorAll('section');
 const isInViewport = function (element) {
     let bounding = element.getBoundingClientRect();
     return (
-        bounding.top >= -200 &&
+        bounding.top >= -300 &&
         bounding.left >= 0 &&
         bounding.bottom <= (window.innerHeight + 300 || document.documentElement.clientHeight + 300) &&
         bounding.right <= (window.innerWidth || document.documentElement.clientWidth)
@@ -65,7 +68,7 @@ function buildNavBar() {
         navSectionLink.className = 'menu__link';
         navSectionLink.innerText = pageSection.dataset.nav;
         navSectionLink.href = `#${sectionID}`;
-        navSectionLink.id = `${sectionID}`;
+        navSectionLink.id = `nav-${sectionID}`;
 
         navMenuItem.append(navSectionLink);
         navBar.appendChild(navMenuItem);
@@ -75,7 +78,7 @@ function buildNavBar() {
 // toggle active class if element in or out of viewport
 const activeSection = function () {
     for (let pageSection of pageSections) {
-        let navMenuItem = document.querySelector(`a#${pageSection.id}`);
+        let navMenuItem = document.querySelector(`a#nav-${pageSection.id}`);
         if (isInViewport(pageSection)) {
             activateElement(pageSection);
             activateElement(navMenuItem);
@@ -86,8 +89,16 @@ const activeSection = function () {
     }
 };
 
-// Scroll to anchor ID using scrollTO event
-
+//Scroll to anchor ID using scrollTO event
+const scrollToSection = function (event) {
+    if (event.target.className === 'menu__link') {
+        event.preventDefault();
+        let element = document.querySelector(event.target.getAttribute('href'));
+        element.scrollIntoView({
+            behavior: 'smooth'
+        });
+    }
+};
 
 /**
  * End Main Functions
@@ -100,24 +111,25 @@ document.addEventListener('DOMContentLoaded', function () {
     buildNavBar();
 });
 
-// Scroll to section on link click
-document.querySelector('#navbar__list').addEventListener('click', function (event) {
-    event.preventDefault();
-    console.log(event);
-    let sectionToScroll = document.querySelector(event.target.dataset.id);
-    sectionToScroll.scrollIntoView({
+// Button to scroll to top
+scrollToTopBtn.addEventListener('click', function () {
+    window.scroll({
+        top: 0,
         behavior: 'smooth'
-    });
+    })
 });
+
+// check whether or not to show scroll to top button
+window.addEventListener('scroll', function () {
+    if (!isInViewport(pageSections[0])) {
+        scrollToTopBtn.style.opacity = '0.7';
+    } else if (isInViewport(pageSections[0])) {
+        scrollToTopBtn.style.opacity = '0';
+    }
+});
+
+// Scroll to section on link click
+document.addEventListener('click', scrollToSection);
 
 // Set sections as active
 window.addEventListener('scroll', activeSection);
-
-// function scrollToElement(element) {
-//     const { x, y, top } = element.getBoundingClientRect();
-//     window.scrollTo({
-//         top: document.documentElement.scrollTop + y,
-//         left: x,
-//         behavior: 'smooth',
-//     })
-// }
